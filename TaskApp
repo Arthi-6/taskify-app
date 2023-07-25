@@ -1,0 +1,82 @@
+import {useState} from 'preact/hooks';
+import {h,FunctionComponent} from 'preact';
+
+interface Task{
+    id : number;
+    title : string;
+    completed : Boolean;
+}
+const TaskApp : FunctionComponent = () =>{
+    const [tasks, setTasks]=useState<Task[]>([]);
+    const [newTask, setNewTask]=useState('');
+    const [searchQuery, setSearchQuery]=useState('');
+    const[filteredTasks, setFilteredTasks]=useState<Task[]>([]);
+};
+
+const handleNewTaskChange = (event:h.JSX.TargetedEvent<HTMLImageElement>)=>{
+    setNewTask(event.currentTarget.value);
+};
+
+const handleAddTask = () => {
+    if(newTask.trim()!==''){
+        if(tasks.length<5){
+            const task:Task={
+                id:Date.now(),
+                title:newTask,
+                completed:false,
+            };
+            setTasks((prevTasks) => [...prevTasks, task]);
+            setNewTask('');
+            setFilteredTasks((prevTasks) => [...prevTasks, task]);
+        }else{
+            alert('Maximum task limit reached!');
+        }
+    }
+};
+
+const handleSearch = (event:h.JSX.TargetedEvent<HTMLInputElement>)=>{
+    const {value} = event.currentTarget;
+    const filteredTasks = tasks.filter((task) =>
+        task.title.toLowerCase().includes(value.toLowerCase())
+    );
+    setSearchQuery(value);
+    setFilteredTasks(filteredTasks);
+};
+
+const handleTaskCompletion = (taskId: number) => {
+    const updatedTasks = task.map((task) => 
+        task.id === taskId ? {...task, completed: !task.completed}:task
+    );
+    setTasks(updatedTasks);
+    setFilteredTasks(updatedTasks.filter((task)=>
+        task.title.toLowerCase(),includes(searchQuery.toLowerCase())
+        ));
+};
+
+const handleTaskDeletion = (taskId : number) => {
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks);
+    setFilteredTasks(updatedTasks.filter((task) => 
+        task.title.toLowerCase().includes(searchQuery.toLowerCase())
+    ));
+};
+
+return (
+    <div>
+        <div>
+           <input 
+                type="text"
+                value={newTask}
+                onInput={handleNewTaskChange}
+                placeholder="Add a task..."
+            /> 
+            <button onClick={handleAddTask}Add Task</button>
+        </div>
+        <div>
+            <input
+                type="text"
+                value={searchQuery}
+                onInput={handleSearch}
+        </div>
+    </div>
+);
